@@ -1,3 +1,4 @@
+const { log } = require('console');
 const express = require('express');
 const fs = require('fs/promises');
 
@@ -16,17 +17,21 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
     const { nome, idade } = req.body;
 
-    const teste = await fs.readFile('./src/usuarios.json');
+    try {
+        const teste = await fs.readFile('./src/usuarios.json');
 
-    const pessoas = JSON.parse(teste);
+        const pessoas = JSON.parse(teste);
 
-    pessoas.push({ nome, idade });
+        pessoas.push({ nome, idade });
 
-    const pessoasStringfy = JSON.stringify(pessoas);
+        const pessoasStringfy = JSON.stringify(pessoas);
 
-    await fs.writeFile('./src/usuarios.json', pessoasStringfy);
+        await fs.writeFile('./src/usuarios.json', pessoasStringfy);
 
-    return res.json({ mensagem: 'Pesoa cadastrada com sucesso'})
+        return res.json({ mensagem: 'Pesoa cadastrada com sucesso'});
+    } catch (erro) {
+        return res.json(`Deu erro: ${erro}`);
+    }
 })
 
 app.listen(3000);
